@@ -1,0 +1,35 @@
+version: '3'
+services:
+  esphome:
+    container_name: esphome
+    image: esphome/esphome
+    volumes:
+      - ./esphome-data:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    privileged: true
+    ports:
+      - 0.0.0.0:6052:6052
+    command: -v dashboard /config
+    networks:
+      - zbx_net
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:1.6
+    volumes:
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_config:/mosquitto/config
+      - mosquitto_log:/mosquitto/log
+    ports:
+      - 0.0.0.0:1883:1883
+      - 0.0.0.0:9001:9001
+    networks:
+      - zbx_net
+
+volumes:
+  mosquitto_data:
+  mosquitto_config:
+  mosquitto_log:
+
+networks:
+  zbx_net:
